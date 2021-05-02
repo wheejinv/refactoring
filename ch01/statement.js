@@ -30,9 +30,21 @@ function statement (invoice) {
 		return plays[aPerformance.playID];
 	}
 
-	let totalAmount = 0
-	let volumeCredits = 0
-	let result = `청구 내역 (고객명: ${invoice.customer})\n`
+	function volumeCreditsFor(aPerformance) {
+		let result = 0;
+
+		result += Math.max(aPerformance.audience - 30, 0);
+
+		if ("comedy" === playFor(aPerformance).type) {
+			result += Math.floor(aPerformance.audience / 5);
+		}
+
+		return result;
+	}
+
+	let totalAmount = 0;
+	let volumeCredits = 0;
+	let result = `청구 내역 (고객명: ${invoice.customer})\n`;
 
 	// https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
 	const format = new Intl.NumberFormat('en-US', {
@@ -43,10 +55,7 @@ function statement (invoice) {
 
 	for (let perf of invoice.performances) {
 		// 포인트를 적립한다.
-		volumeCredits += Math.max(perf.audience - 30, 0);
-
-		// 희극 관객 5명마다 추가 포인트를 제공한다.
-		if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+		volumeCredits += volumeCreditsFor(perf); // <- 추출한 함수를 이용해 값을 누적
 
 		// 청구 내역을 출력한다.
 		result += `${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience}석)\n`
