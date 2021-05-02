@@ -42,13 +42,13 @@ function statement (invoice) {
 		return result;
 	}
 
-	function format(aNumber) {
+	function usd(aNumber) {
 		// https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
 		return new Intl.NumberFormat('en-US', {
 			style: 'currency',
 			currency: 'USD',
 			minimumFractionDigits: 2,
-		}).format(aNumber);
+		}).format(aNumber/100);
 	}
 
 	let totalAmount = 0;
@@ -60,11 +60,11 @@ function statement (invoice) {
 		volumeCredits += volumeCreditsFor(perf); // <- 추출한 함수를 이용해 값을 누적
 
 		// 청구 내역을 출력한다.
-		result += `${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience}석)\n`
+		result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`
 		totalAmount += amountFor(perf)
 	}
 
-	result += `총액: ${format(totalAmount/100)}\n`;
+	result += `총액: ${usd(totalAmount)}\n`;
 	result += `적립 포인트: ${volumeCredits}점\n`;
 	return result;
 }
