@@ -42,16 +42,18 @@ function statement (invoice) {
 		return result;
 	}
 
+	function format(aNumber) {
+		// https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
+		return new Intl.NumberFormat('en-US', {
+			style: 'currency',
+			currency: 'USD',
+			minimumFractionDigits: 2,
+		}).format(aNumber);
+	}
+
 	let totalAmount = 0;
 	let volumeCredits = 0;
 	let result = `청구 내역 (고객명: ${invoice.customer})\n`;
-
-	// https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
-	const format = new Intl.NumberFormat('en-US', {
-		style: 'currency',
-		currency: 'USD',
-		minimumFractionDigits: 2,
-	}).format;
 
 	for (let perf of invoice.performances) {
 		// 포인트를 적립한다.
