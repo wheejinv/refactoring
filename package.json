@@ -4,17 +4,23 @@
   "description": "리팩터링 2판",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --watch --recursive --require babel-core/register"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wheejinv/refactoring.git"
-  },
+  "repository": "git+https://github.com/wheejinv/refactoring.git",
   "type": "module",
-  "author": "",
+  "author": "whee <wheejinv@naver.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/wheejinv/refactoring/issues"
   },
-  "homepage": "https://github.com/wheejinv/refactoring#readme"
+  "homepage": "https://github.com/wheejinv/refactoring#readme",
+  "dependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "chai": "^4.2.0",
+    "eslint": "^5.12.1",
+    "js-money": "^0.6.3",
+    "mocha": "^5.2.0",
+    "sinon": "^7.3.2"
+  }
 }

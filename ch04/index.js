@@ -1,6 +1,6 @@
 
 
-function sampleProvinceData() {
+export default function sampleProvinceData() {
 	return {
 		name: "Asia",
 		producers: [

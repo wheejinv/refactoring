@@ -1,4 +1,5 @@
 import Province from "../../ch04/Province";
+import sampleProvinceData from "../../ch04";
 
 var assert = require('assert');
 
