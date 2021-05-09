@@ -1,7 +1,7 @@
 import plays from './plays.json';
 import invoices from './invoices.json';
 
-function statement (invoice) {
+export default function statement (invoice) {
 	function amountFor(aPerformance) {
 		let result = 0;
 
