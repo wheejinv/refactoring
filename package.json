@@ -4,7 +4,7 @@
   "description": "리팩터링 2판",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --watch --recursive --require babel-core/register"
+    "test": "mocha --watch --recursive --require babel-core/register --watch-extensions json"
   },
   "repository": "git+https://github.com/wheejinv/refactoring.git",
   "type": "module",
