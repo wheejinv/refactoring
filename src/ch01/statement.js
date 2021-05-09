@@ -43,8 +43,8 @@ export default function statement (invoice) {
 		}
 		function totalAmount() {
 			let result = 0;
-			for (let perf of invoice.performances) {
-				result += amountFor(perf)
+			for (let perf of data.performances) {
+				result += perf.amount;
 			}
 
 			return result;
