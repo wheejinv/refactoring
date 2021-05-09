@@ -2,6 +2,55 @@ import plays from './plays.json';
 import invoices from './invoices.json';
 
 export default function statement (invoice) {
+	function renderPlainText(data, plays) {
+		let result = `청구 내역 (고객명: ${data.customer})\n`;
+
+		for (let perf of data.performances) {
+			result += `${perf.play.name}: ${perf.amount} (${perf.audience}석)\n`
+		}
+
+		result += `총액: ${usd(totalAmount())}\n`;
+		result += `적립 포인트: ${totalVolumeCredits()}점\n`;
+		return result;
+
+		function volumeCreditsFor(aPerformance) {
+			let result = 0;
+
+			result += Math.max(aPerformance.audience - 30, 0);
+
+			if ("comedy" === playFor(aPerformance).type) {
+				result += Math.floor(aPerformance.audience / 5);
+			}
+
+			return result;
+		}
+		function usd(aNumber) {
+			// https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
+			return new Intl.NumberFormat('en-US', {
+				style: 'currency',
+				currency: 'USD',
+				minimumFractionDigits: 2,
+			}).format(aNumber/100);
+		}
+		function totalVolumeCredits() {
+			let volumeCredits = 0;
+
+			for (let perf of invoice.performances) {
+				volumeCredits += volumeCreditsFor(perf); // <- 추출한 함수를 이용해 값을 누적
+			}
+
+			return volumeCredits;
+		}
+		function totalAmount() {
+			let result = 0;
+			for (let perf of invoice.performances) {
+				result += amountFor(perf)
+			}
+
+			return result;
+		}
+	}
+
 	function amountFor(aPerformance) {
 		let result = 0;
 
@@ -25,70 +74,17 @@ export default function statement (invoice) {
 
 		return result;
 	}
-
 	function playFor(aPerformance) {
 		return plays[aPerformance.playID];
 	}
 
-	function volumeCreditsFor(aPerformance) {
-		let result = 0;
-
-		result += Math.max(aPerformance.audience - 30, 0);
-
-		if ("comedy" === playFor(aPerformance).type) {
-			result += Math.floor(aPerformance.audience / 5);
-		}
-
-		return result;
-	}
-
-	function usd(aNumber) {
-		// https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
-		return new Intl.NumberFormat('en-US', {
-			style: 'currency',
-			currency: 'USD',
-			minimumFractionDigits: 2,
-		}).format(aNumber/100);
-	}
-
-	function totalVolumeCredits() {
-		let volumeCredits = 0;
-
-		for (let perf of invoice.performances) {
-			volumeCredits += volumeCreditsFor(perf); // <- 추출한 함수를 이용해 값을 누적
-		}
-
-		return volumeCredits;
-	}
-
-	function totalAmount() {
-		let result = 0;
-		for (let perf of invoice.performances) {
-			result += amountFor(perf)
-		}
-
-		return result;
-	}
-
-	// 이렇게 새로 만든 레코드에 데이터를 채울 예정. 복사를 한 이유는 건넨 데이터를 불변처럼 취급하고 싶어서임.
 	function enrichPerformance(aPerformance) {
+		// 이렇게 새로 만든 레코드에 데이터를 채울 예정. 복사를 한 이유는 건넨 데이터를 불변처럼 취급하고 싶어서임.
 		const result = Object.assign({}, aPerformance); // 얕은 복사 수행
 
 		result.play = playFor(result);
 		result.amount = amountFor(result);
 
-		return result;
-	}
-
-	function renderPlainText(data, plays) {
-		let result = `청구 내역 (고객명: ${data.customer})\n`;
-
-		for (let perf of data.performances) {
-			result += `${perf.play.name}: ${perf.amount} (${perf.audience}석)\n`
-		}
-
-		result += `총액: ${usd(totalAmount())}\n`;
-		result += `적립 포인트: ${totalVolumeCredits()}점\n`;
 		return result;
 	}
 
