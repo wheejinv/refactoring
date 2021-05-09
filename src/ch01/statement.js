@@ -74,7 +74,8 @@ export default function statement (invoice) {
 	function enrichPerformance(aPerformance) {
 		const result = Object.assign({}, aPerformance); // 얕은 복사 수행
 
-		result.play = playFor(aPerformance);
+		result.play = playFor(result);
+		result.amount = amountFor(result);
 
 		return result;
 	}
@@ -83,7 +84,7 @@ export default function statement (invoice) {
 		let result = `청구 내역 (고객명: ${data.customer})\n`;
 
 		for (let perf of data.performances) {
-			result += `${perf.play.name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`
+			result += `${perf.play.name}: ${perf.amount} (${perf.audience}석)\n`
 		}
 
 		result += `총액: ${usd(totalAmount())}\n`;
