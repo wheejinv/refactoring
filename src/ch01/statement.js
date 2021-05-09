@@ -70,15 +70,31 @@ export default function statement (invoice) {
 		return result;
 	}
 
-	let result = `청구 내역 (고객명: ${invoice.customer})\n`;
+	// 이렇게 새로 만든 레코드에 데이터를 채울 예정. 복사를 한 이유는 건넨 데이터를 불변처럼 취급하고 싶어서임.
+	function enrichPerformance(aPerformance) {
+		const result = Object.assign({}, aPerformance); // 얕은 복사 수행
 
-	for (let perf of invoice.performances) {
-		result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`
+		result.play = playFor(aPerformance);
+
+		return result;
 	}
 
-	result += `총액: ${usd(totalAmount())}\n`;
-	result += `적립 포인트: ${totalVolumeCredits()}점\n`;
-	return result;
+	function renderPlainText(data, plays) {
+		let result = `청구 내역 (고객명: ${data.customer})\n`;
+
+		for (let perf of data.performances) {
+			result += `${perf.play.name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`
+		}
+
+		result += `총액: ${usd(totalAmount())}\n`;
+		result += `적립 포인트: ${totalVolumeCredits()}점\n`;
+		return result;
+	}
+
+	const statementData = {};
+	statementData.customer = invoice.customer; // 고객 데이터를 중간 데이터로 옮김
+	statementData.performances = invoice.performances.map(enrichPerformance);
+	return renderPlainText(statementData, plays)
 }
 
 console.log(statement(invoices[0], plays));
