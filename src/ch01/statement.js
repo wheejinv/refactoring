@@ -9,8 +9,8 @@ export default function statement (invoice) {
 			result += `${perf.play.name}: ${perf.amount} (${perf.audience}석)\n`
 		}
 
-		result += `총액: ${usd(totalAmount())}\n`;
-		result += `적립 포인트: ${totalVolumeCredits()}점\n`;
+		result += `총액: ${usd(data.totalAmount)}\n`;
+		result += `적립 포인트: ${data.totalVolumeCredits}점\n`;
 		return result;
 
 		function usd(aNumber) {
@@ -20,23 +20,6 @@ export default function statement (invoice) {
 				currency: 'USD',
 				minimumFractionDigits: 2,
 			}).format(aNumber/100);
-		}
-		function totalVolumeCredits() {
-			let volumeCredits = 0;
-
-			for (let perf of invoice.performances) {
-				volumeCredits += volumeCreditsFor(perf); // <- 추출한 함수를 이용해 값을 누적
-			}
-
-			return volumeCredits;
-		}
-		function totalAmount() {
-			let result = 0;
-			for (let perf of data.performances) {
-				result += perf.amount;
-			}
-
-			return result;
 		}
 	}
 
@@ -77,6 +60,23 @@ export default function statement (invoice) {
 
 		return result;
 	}
+	function totalAmount(data) {
+		let result = 0;
+		for (let perf of data.performances) {
+			result += perf.amount;
+		}
+
+		return result;
+	}
+	function totalVolumeCredits(data) {
+		let volumeCredits = 0;
+
+		for (let perf of data.performances) {
+			volumeCredits += perf.volumeCredits; // <- 추출한 함수를 이용해 값을 누적
+		}
+
+		return volumeCredits;
+	}
 
 	function enrichPerformance(aPerformance) {
 		// 이렇게 새로 만든 레코드에 데이터를 채울 예정. 복사를 한 이유는 건넨 데이터를 불변처럼 취급하고 싶어서임.
@@ -92,6 +92,8 @@ export default function statement (invoice) {
 	const statementData = {};
 	statementData.customer = invoice.customer; // 고객 데이터를 중간 데이터로 옮김
 	statementData.performances = invoice.performances.map(enrichPerformance);
+	statementData.totalAmount = totalAmount(statementData);
+	statementData.totalVolumeCredits = totalVolumeCredits(statementData);
 	return renderPlainText(statementData, plays)
 }
 
