@@ -13,17 +13,6 @@ export default function statement (invoice) {
 		result += `적립 포인트: ${totalVolumeCredits()}점\n`;
 		return result;
 
-		function volumeCreditsFor(aPerformance) {
-			let result = 0;
-
-			result += Math.max(aPerformance.audience - 30, 0);
-
-			if ("comedy" === playFor(aPerformance).type) {
-				result += Math.floor(aPerformance.audience / 5);
-			}
-
-			return result;
-		}
 		function usd(aNumber) {
 			// https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat
 			return new Intl.NumberFormat('en-US', {
@@ -77,6 +66,17 @@ export default function statement (invoice) {
 	function playFor(aPerformance) {
 		return plays[aPerformance.playID];
 	}
+	function volumeCreditsFor(aPerformance) {
+		let result = 0;
+
+		result += Math.max(aPerformance.audience - 30, 0);
+
+		if ("comedy" === playFor(aPerformance).type) {
+			result += Math.floor(aPerformance.audience / 5);
+		}
+
+		return result;
+	}
 
 	function enrichPerformance(aPerformance) {
 		// 이렇게 새로 만든 레코드에 데이터를 채울 예정. 복사를 한 이유는 건넨 데이터를 불변처럼 취급하고 싶어서임.
@@ -84,6 +84,7 @@ export default function statement (invoice) {
 
 		result.play = playFor(result);
 		result.amount = amountFor(result);
+		result.volumeCredits = volumeCreditsFor(result)
 
 		return result;
 	}
