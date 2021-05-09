@@ -10,6 +10,9 @@ describe('province', function() {
 	beforeEach(function() {
 		asia = new Province(sampleProvinceData()); // 픽스처 설정
 	});
+	it('expect normal', function() {
+		expect(asia.profit).equal(230);
+	})
 	it('shortfall', function() {
 		assert.equal(asia.shortfall, 5); // 검증
 	})

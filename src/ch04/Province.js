@@ -56,6 +56,7 @@ export default class Province {
 	}
 
 	get profit() {
+		// 500 - 90 - 120 - 60 = 230
 		return this.demandValue - this.demandCost;
 	}
 
